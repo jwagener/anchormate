@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14269.12" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14252.5"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Anchor" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="hybrid" showsUserLocation="YES" showsScale="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3rB-p5-riP">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            </mapView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yl9-Bu-ZhF">
+                                <rect key="frame" x="187.5" y="343.5" width="0.0" height="0.0"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" id="BiN-qh-Q76"/>
+                                    <constraint firstAttribute="width" id="RfE-OO-X9V"/>
+                                </constraints>
+                            </view>
+                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RGN-je-6eL">
+                                <rect key="frame" x="16" y="607" width="343" height="44"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fao-dg-BHi">
+                                        <rect key="frame" x="0.0" y="0.0" width="343" height="44"/>
+                                        <color key="backgroundColor" name="PlacedAnchor"/>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
+                                        <state key="normal" title="Place Anchor">
+                                            <color key="titleColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="placeAnchor:" destination="BYZ-38-t0r" eventType="touchUpInside" id="JRd-Ch-vZL"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="HiP-qN-02s"/>
+                                </constraints>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="leadingMargin" secondItem="3rB-p5-riP" secondAttribute="leading" constant="16" id="5Ju-Wu-MSE"/>
+                            <constraint firstItem="3rB-p5-riP" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" constant="-20" id="Bft-KY-yCh"/>
+                            <constraint firstItem="yl9-Bu-ZhF" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="DMW-ge-vE5"/>
+                            <constraint firstItem="yl9-Bu-ZhF" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="Kqi-oA-M20"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="RGN-je-6eL" secondAttribute="bottom" constant="16" id="LD7-Je-QEz"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="3rB-p5-riP" secondAttribute="bottom" id="P7x-4f-wMq"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="3rB-p5-riP" secondAttribute="trailing" constant="-16" id="WTg-L6-Jzc"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="RGN-je-6eL" secondAttribute="trailing" id="XA2-wZ-pp1"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="RGN-je-6eL" secondAttribute="leading" id="agI-Zx-sWk"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <connections>
+                        <outlet property="anchorPlaceholderView" destination="yl9-Bu-ZhF" id="3FS-se-Sal"/>
+                        <outlet property="mapView" destination="3rB-p5-riP" id="eMW-4y-AK6"/>
+                        <outlet property="primaryButton" destination="fao-dg-BHi" id="oeP-Qp-wwx"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="136.80000000000001" y="133.5832083958021"/>
+        </scene>
+    </scenes>
+    <resources>
+        <namedColor name="PlacedAnchor">
+            <color red="0.078000001609325409" green="0.55699998140335083" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

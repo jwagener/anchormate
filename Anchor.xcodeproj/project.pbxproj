@@ -7,6 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B80C48E20E9701C0083357E /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B80C48D20E9701C0083357E /* LocationManager.swift */; };
+		1B80C49120E982930083357E /* NSLayoutConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B80C49020E982930083357E /* NSLayoutConstraint.swift */; };
+		1B80C49420E98CE50083357E /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B80C49320E98CE50083357E /* Location.swift */; };
+		1B80C49620E98CEF0083357E /* Anchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B80C49520E98CEF0083357E /* Anchor.swift */; };
+		1B80C49820EA335C0083357E /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B80C49720EA335C0083357E /* Event.swift */; };
+		1B80C49A20EA3C7E0083357E /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B80C49920EA3C7E0083357E /* ImageView.swift */; };
+		1B80C49C20EA3E2C0083357E /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B80C49B20EA3E2C0083357E /* UIColor.swift */; };
+		1B80C4A020EA3FAA0083357E /* ManagedObjectWithCoordinate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B80C49F20EA3FAA0083357E /* ManagedObjectWithCoordinate.swift */; };
+		1B80C4A220EA44AE0083357E /* UserNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B80C4A120EA44AE0083357E /* UserNotificationManager.swift */; };
+		1B80C4A420EA57420083357E /* NSManagedObjectContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B80C4A320EA57420083357E /* NSManagedObjectContext.swift */; };
 		1B9EFFCE20E6D7B9006102BD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B9EFFCD20E6D7B9006102BD /* AppDelegate.swift */; };
 		1B9EFFD020E6D7B9006102BD /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B9EFFCF20E6D7B9006102BD /* ViewController.swift */; };
 		1B9EFFD320E6D7B9006102BD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1B9EFFD120E6D7B9006102BD /* Main.storyboard */; };
@@ -16,6 +26,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1B80C48D20E9701C0083357E /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		1B80C49020E982930083357E /* NSLayoutConstraint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSLayoutConstraint.swift; sourceTree = "<group>"; };
+		1B80C49320E98CE50083357E /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
+		1B80C49520E98CEF0083357E /* Anchor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Anchor.swift; sourceTree = "<group>"; };
+		1B80C49720EA335C0083357E /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		1B80C49920EA3C7E0083357E /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
+		1B80C49B20EA3E2C0083357E /* UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
+		1B80C49F20EA3FAA0083357E /* ManagedObjectWithCoordinate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedObjectWithCoordinate.swift; sourceTree = "<group>"; };
+		1B80C4A120EA44AE0083357E /* UserNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNotificationManager.swift; sourceTree = "<group>"; };
+		1B80C4A320EA57420083357E /* NSManagedObjectContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSManagedObjectContext.swift; sourceTree = "<group>"; };
 		1B9EFFCA20E6D7B9006102BD /* Anchor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Anchor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B9EFFCD20E6D7B9006102BD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1B9EFFCF20E6D7B9006102BD /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -37,6 +57,48 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1B80C48F20E982840083357E /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				1B80C49020E982930083357E /* NSLayoutConstraint.swift */,
+				1B80C49920EA3C7E0083357E /* ImageView.swift */,
+				1B80C49B20EA3E2C0083357E /* UIColor.swift */,
+				1B80C4A320EA57420083357E /* NSManagedObjectContext.swift */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+		1B80C49220E98CBA0083357E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				1B9EFFD420E6D7B9006102BD /* Anchor.xcdatamodeld */,
+				1B80C49320E98CE50083357E /* Location.swift */,
+				1B80C49520E98CEF0083357E /* Anchor.swift */,
+				1B80C49720EA335C0083357E /* Event.swift */,
+				1B80C49F20EA3FAA0083357E /* ManagedObjectWithCoordinate.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		1B80C49D20EA3F170083357E /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				1B9EFFCF20E6D7B9006102BD /* ViewController.swift */,
+				1B9EFFD120E6D7B9006102BD /* Main.storyboard */,
+				1B9EFFD920E6D7BA006102BD /* LaunchScreen.storyboard */,
+			);
+			path = "View Controllers";
+			sourceTree = "<group>";
+		};
+		1B80C49E20EA3F320083357E /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				1B80C48D20E9701C0083357E /* LocationManager.swift */,
+				1B80C4A120EA44AE0083357E /* UserNotificationManager.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
 		1B9EFFC120E6D7B9006102BD = {
 			isa = PBXGroup;
 			children = (
@@ -56,13 +118,13 @@
 		1B9EFFCC20E6D7B9006102BD /* Anchor */ = {
 			isa = PBXGroup;
 			children = (
+				1B80C49E20EA3F320083357E /* Managers */,
+				1B80C49220E98CBA0083357E /* Models */,
+				1B80C48F20E982840083357E /* Support */,
+				1B80C49D20EA3F170083357E /* View Controllers */,
 				1B9EFFCD20E6D7B9006102BD /* AppDelegate.swift */,
-				1B9EFFCF20E6D7B9006102BD /* ViewController.swift */,
-				1B9EFFD120E6D7B9006102BD /* Main.storyboard */,
 				1B9EFFD720E6D7BA006102BD /* Assets.xcassets */,
-				1B9EFFD920E6D7BA006102BD /* LaunchScreen.storyboard */,
 				1B9EFFDC20E6D7BA006102BD /* Info.plist */,
-				1B9EFFD420E6D7B9006102BD /* Anchor.xcdatamodeld */,
 			);
 			path = Anchor;
 			sourceTree = "<group>";
@@ -99,6 +161,11 @@
 				TargetAttributes = {
 					1B9EFFC920E6D7B9006102BD = {
 						CreatedOnToolsVersion = 10.0;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -138,9 +205,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1B80C49820EA335C0083357E /* Event.swift in Sources */,
+				1B80C48E20E9701C0083357E /* LocationManager.swift in Sources */,
+				1B80C49620E98CEF0083357E /* Anchor.swift in Sources */,
 				1B9EFFD620E6D7B9006102BD /* Anchor.xcdatamodeld in Sources */,
 				1B9EFFD020E6D7B9006102BD /* ViewController.swift in Sources */,
 				1B9EFFCE20E6D7B9006102BD /* AppDelegate.swift in Sources */,
+				1B80C49A20EA3C7E0083357E /* ImageView.swift in Sources */,
+				1B80C49420E98CE50083357E /* Location.swift in Sources */,
+				1B80C49120E982930083357E /* NSLayoutConstraint.swift in Sources */,
+				1B80C4A420EA57420083357E /* NSManagedObjectContext.swift in Sources */,
+				1B80C4A220EA44AE0083357E /* UserNotificationManager.swift in Sources */,
+				1B80C4A020EA3FAA0083357E /* ManagedObjectWithCoordinate.swift in Sources */,
+				1B80C49C20EA3E2C0083357E /* UIColor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
