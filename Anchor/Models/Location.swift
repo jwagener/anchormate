@@ -1,5 +1,6 @@
 import CoreData
 import CoreLocation
+import MapKit
 
 class Location: NSManagedObject {
     static var entityName = "Location"
@@ -27,4 +28,8 @@ class Location: NSManagedObject {
             longitude = newValue.longitude
         }
     }
+}
+
+extension Location: MKAnnotation {
+    var title: String? { return "Location" }
 }

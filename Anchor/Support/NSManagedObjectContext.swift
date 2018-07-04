@@ -153,6 +153,7 @@ extension NSManagedObjectContext {
 
     /// Adds the given block to the default `NotificationCenter`'s dispatch table for the given context's did-save notifications.
     /// - returns: An opaque object to act as the observer. This must be sent to the default `NotificationCenter`'s `removeObserver()`.
+    @discardableResult
     public func addContextDidSaveNotificationObserver(_ handler: @escaping (ContextDidSaveNotification) -> ()) -> NSObjectProtocol {
         let nc = NotificationCenter.default
         return nc.addObserver(forName: .NSManagedObjectContextDidSave, object: self, queue: nil) { note in

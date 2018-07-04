@@ -19,6 +19,9 @@ class ViewController: UIViewController {
     }
 
     var anchor: Anchor?
+    private var radiusOverlay: MKCircle?
+    private var trackOverlay: MKPolyline?
+    private var trackCoordinates: [CLLocationCoordinate2D] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,17 +32,23 @@ class ViewController: UIViewController {
 
     private func configureData() {
         anchor = Anchor.fetchCurrent(in: context)
-        if let anchor = anchor {
-
-            fetchedResultsController = NSFetchedResultsController(fetchRequest: anchor.locationsFetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
-            fetchedResultsController?.delegate = self
-
-            try! fetchedResultsController?.performFetch()
-
-            NSLog("feteched \(fetchedResultsController?.fetchedObjects?.count)")
+        if let _ = anchor {
+            configureAnchorLocationsFetch()
         }
     }
 
+    private func configureAnchorLocationsFetch() {
+        guard let anchor = anchor else { return }
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: anchor.locationsFetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+        fetchedResultsController?.delegate = self
+
+        try! fetchedResultsController?.performFetch()
+        NSLog("Initial Fetch Location \(fetchedResultsController?.fetchedObjects?.count)")
+
+        trackCoordinates = (fetchedResultsController?.fetchedObjects ?? []).map { $0.coordinate }
+        trackOverlay = MKPolyline(coordinates: trackCoordinates, count: trackCoordinates.count)
+        mapView.addOverlay(trackOverlay!)
+    }
 
     private func configureViews() {
         addPlaceholderAnchor()
@@ -48,11 +57,10 @@ class ViewController: UIViewController {
         mapView.delegate = self
 
         if let anchor = anchor {
-            mapView.addAnnotation(anchor)
-            mapView.selectAnnotation(anchor, animated: true)
+            addAnchorAnnotations(for: anchor)
         }
-        updateViews()
 
+        updateViews()
     }
 
     private func updateViews() {
@@ -78,26 +86,51 @@ class ViewController: UIViewController {
     }
 
 
+    func addAnchorAnnotations(for anchor: Anchor) {
+        radiusOverlay = MKCircle(center: anchor.coordinate, radius: anchor.radius)
+        mapView.addAnnotation(anchor)
+        mapView.addOverlay(radiusOverlay!)
+        mapView.selectAnnotation(anchor, animated: true)
+    }
+
+    func removeAnchorAnnotations(){
+        guard let anchor = anchor, let radiusAnnotation = radiusOverlay else { return }
+        mapView.removeAnnotation(anchor)
+        mapView.removeOverlay(radiusAnnotation)
+    }
+
     // IB Actions
 
     @IBAction func placeAnchor(_ sender: Any) {
+        let userCoordinate = mapView.userLocation.coordinate
+//        let distanceToNewAnchor = userCoordinate.distanceTo(mapView.centerCoordinate)
+
         if let currentAnchor = anchor {
-            mapView.removeAnnotation(currentAnchor)
-            mapView.setCenter(currentAnchor.coordinate, animated: true)
+            removeAnchorAnnotations()
+
+
+            if currentAnchor.coordinate.distanceTo(userCoordinate) < Anchor.maximumAnchorRadius {
+              mapView.setCenter(currentAnchor.coordinate, animated: true)
+            }
 
             anchor = Anchor.fetchCurrent(in: context)
-            anchor?.active = false
+            anchor?.deacticate()
+
             try! context.save()
             anchor = nil
         } else {
+
             appDelegate.userNotificationManager.requestPermission()
             appDelegate.locationManager.requestBackgroundPermission()
+
             anchor = Anchor.new(in: context)
-            anchor?.coordinate = mapView.centerCoordinate
+            anchor!.coordinate = mapView.centerCoordinate
+            anchor!.setRadius(for: userCoordinate)
+            anchor!.activate()
+
             try! context.save()
 
-            mapView.addAnnotation(anchor!)
-            mapView.selectAnnotation(anchor!, animated: true)
+            addAnchorAnnotations(for: anchor!)
 
             configureData()
         }
@@ -108,37 +141,71 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: MKMapViewDelegate {
-    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        guard let annotation = annotation as? Anchor else { return nil }
-
-        let reuseId = "Anchor"
-        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId)
-
-        if let annotationView = annotationView {
-            annotationView.annotation = annotation
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        if let circleOverlay = overlay as? MKCircle {
+            let renderer = MKCircleRenderer(circle: circleOverlay)
+            renderer.fillColor = UIColor.alertRed.withAlphaComponent(0.2)
+            renderer.strokeColor = UIColor.alertRed.withAlphaComponent(0.9)
+            renderer.lineWidth = 4.0
+            return renderer
+        } else if let lineOverlay = overlay as? MKPolyline {
+            let renderer = MKPolylineRenderer(polyline: lineOverlay)
+            renderer.strokeColor = UIColor.placedAnchor.withAlphaComponent(0.4)
+            renderer.lineWidth = 4.0
+            return renderer
         } else {
-            let newAnnotationView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
-            newAnnotationView.canShowCallout = false
-            newAnnotationView.glyphImage = UIImage(named: "anchor5")
-            newAnnotationView.markerTintColor = UIColor(named: "PlacedAnchor")!
-            newAnnotationView.animatesWhenAdded = true
-            annotationView = newAnnotationView
+            return MKOverlayRenderer(overlay: overlay)
         }
+    }
 
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        //NSLog("annotation view for \(annotation)")
+        switch annotation {
+        case is Anchor:   return viewForAnchorAnnotation(annotation as! Anchor)
+        case is Location: return viewForLocationAnnotation(annotation as! Location)
+        default: return nil
+        }
+    }
+
+    private func viewForAnchorAnnotation(_ annotation: Anchor) -> MKMarkerAnnotationView {
+        let reuseId = "Anchor"
+        let annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKMarkerAnnotationView ?? MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+
+        annotationView.annotation = annotation
+        annotationView.canShowCallout = false
+        annotationView.glyphImage = UIImage(named: "anchor5")
+        annotationView.markerTintColor = UIColor(named: "PlacedAnchor")!
+        annotationView.animatesWhenAdded = true
+        return annotationView
+
+    }
+
+    private func viewForLocationAnnotation(_ annotation: Location) -> MKPinAnnotationView {
+        let reuseId = "Location"
+
+        let annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView ?? MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+
+        annotationView.annotation = annotation
         return annotationView
     }
 }
 
 extension ViewController: NSFetchedResultsControllerDelegate {
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        NSLog("got a change")
-    }
-
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 
-
-        NSLog("got a change")
+        switch type {
+        case .insert:
+            if let location = anObject as? Location {
+                if let trackOverlay = trackOverlay {
+                    mapView.removeOverlay(trackOverlay)
+                    trackCoordinates.append(location.coordinate)
+                    self.trackOverlay = MKPolyline(coordinates: trackCoordinates, count: trackCoordinates.count)
+                    mapView.addOverlay(self.trackOverlay!)
+                }
+            }
+        default:
+            return
+            //NSLog("weird change \(type.rawValue)")
+        }
     }
-
-
 }

@@ -19,6 +19,18 @@ class LocationManager: NSObject {
     func requestBackgroundPermission() {
         clLocationManager.requestAlwaysAuthorization()
     }
+
+    func startMonitoring() {
+        clLocationManager.allowsBackgroundLocationUpdates = true
+        clLocationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+        //            clLocationManager.distanceFilter = 1.0
+        clLocationManager.showsBackgroundLocationIndicator = true
+        clLocationManager.startUpdatingLocation()
+    }
+
+    func stopMonitoring() {
+        clLocationManager.stopUpdatingLocation()
+    }
 }
 
 extension LocationManager: CLLocationManagerDelegate {
@@ -26,7 +38,6 @@ extension LocationManager: CLLocationManagerDelegate {
         backgroundContext.performAndWait {
             if let currentAnchor = Anchor.fetchCurrent(in: backgroundContext) {
                 currentAnchor.addLocations(locations)
-                NSLog("got locations \(locations.last)")
                 try! backgroundContext.save()
             }
         }
@@ -36,10 +47,7 @@ extension LocationManager: CLLocationManagerDelegate {
         NSLog("didchange auth")
 
         if status == .authorizedAlways {
-            clLocationManager.allowsBackgroundLocationUpdates = true
-            clLocationManager.desiredAccuracy = 1.0
-            clLocationManager.showsBackgroundLocationIndicator = true
-            clLocationManager.startUpdatingLocation()
+            startMonitoring()
         }
     }
 }
