@@ -4,7 +4,7 @@ import MapKit
 
 private let minimumLocationDistance = 1.0
 private let minimumLocationAccuracy = 10.0
-
+private let minimumTimeBetweenAlarmNotifications = 5000.0
 
 class Anchor: NSManagedObject {
     static var entityName = "Anchor"
@@ -12,8 +12,10 @@ class Anchor: NSManagedObject {
     @NSManaged var latitude: Double
     @NSManaged var longitude: Double
     @NSManaged var createdAt: Date
+    @NSManaged var lastAnchorAlarm: Date?
+    @NSManaged var lastBatteryAlarm: Date?
     @NSManaged var active: Bool
-    @NSManaged var locations: [Location]
+    @NSManaged var locations: NSSet
     @NSManaged var radius: Double
 
     static let minimumAnchorRadius = 5.0
@@ -80,11 +82,10 @@ class Anchor: NSManagedObject {
     func addLocations(_ newLocations: [CLLocation]) {
         guard let context = managedObjectContext else { fatalError() }
         for clLocation in newLocations {
-            let distanceToLastLocation = clLocation.coordinate.distanceTo(locations.last?.coordinate ?? CLLocationCoordinate2D())
+            let distanceToLastLocation = clLocation.coordinate.distanceTo(orderedLocations.last?.coordinate ?? CLLocationCoordinate2D())
             let distanceToAnchor = clLocation.coordinate.distanceTo(coordinate)
 
-            NSLog("last location date \(locations.last?.createdAt)")
-            if clLocation.horizontalAccuracy < minimumLocationDistance {
+            if clLocation.horizontalAccuracy < minimumLocationAccuracy {
                 appDelegate.userNotificationManager.resetFallbackNotification()
 
                 if distanceToLastLocation > minimumLocationDistance {
@@ -93,20 +94,50 @@ class Anchor: NSManagedObject {
                     location.createdAt = clLocation.timestamp
                     location.anchor = self
 
-
-                    //NSLog("last locatio\(locations.last?.coordinate)")
-
-                    NSLog("Distance to Anchor \(distanceToAnchor), Last locaation: \(distanceToLastLocation)")
-
-                    if distanceToAnchor > radius {
-                        NSLog("alarm")
-                        appDelegate.userNotificationManager.sendAnchorAlarmNotification()
-                    }
+                    NSLog("Distance to Anchor \(distanceToAnchor), Last location: \(distanceToLastLocation)")
+                    checkAlarm()
                 } else {
                     NSLog("skip inaccurate location \(clLocation.horizontalAccuracy)")
                 }
             }
         }
+    }
+
+
+    func addLocationObject(_ value: Location) {
+        self.mutableSetValue(forKey: "locations").add(value)
+    }
+
+    var orderedLocations: [Location] {
+        return locations.compactMap { $0 as? Location }.sorted(by: { $0.createdAt < $1.createdAt })
+    }
+
+    var isOutside: Bool {
+        guard let lastLocation = orderedLocations.last else { return false }
+        return lastLocation.coordinate.distanceTo(coordinate) > radius
+    }
+
+    var shouldSendAlarm: Bool {
+        guard let lastAnchorAlarm = lastAnchorAlarm else { return true }
+        return lastAnchorAlarm.timeIntervalSinceNow * -1.0 > minimumTimeBetweenAlarmNotifications
+    }
+
+    func checkAlarm() {
+        if isOutside {
+            if shouldSendAlarm {
+                triggerAlarm()
+            } else {
+                NSLog("Skipping Alarm due to minimumTimeBetweenAlarmNotifications")
+            }
+        } else {
+            lastAnchorAlarm = nil
+        }
+    }
+
+    func triggerAlarm() {
+        NSLog("Sending Alarm")
+        lastAnchorAlarm = Date(timeIntervalSinceNow: 0)
+        appDelegate.userNotificationManager.sendAnchorAlarmNotification()
     }
 }
 

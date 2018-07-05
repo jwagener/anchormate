@@ -31,7 +31,7 @@ class UserNotificationManager: NSObject {
     func scheduleFallbackNotification() {
         let content = UNMutableNotificationContent()
         content.body = "WARNING - Anchor Watch could not determine location in the last 5 minutes"
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5000, repeats: false)
         let request = UNNotificationRequest(identifier: NotificationType.Fallback.rawValue, content: content, trigger: trigger)
 
         notifcationCenter.add(request) {(error) in

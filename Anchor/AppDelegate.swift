@@ -7,9 +7,8 @@ var appDelegate: AppDelegate { return UIApplication.shared.delegate as! AppDeleg
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
-    let locationManager = LocationManager()
-    let userNotificationManager = UserNotificationManager()
-
+    var locationManager: LocationManager!
+    var userNotificationManager: UserNotificationManager!
 
     var viewContext: NSManagedObjectContext {
         return persistentContainer.viewContext
@@ -31,9 +30,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func setupApplication() {
-        self.backgroundContext = self.persistentContainer.newBackgroundContext()
-        self.setupContextNotificationObserving()
-        self.locationManager.requestPermission()
+        backgroundContext = self.persistentContainer.newBackgroundContext()
+        setupContextNotificationObserving()
+        userNotificationManager = UserNotificationManager()
+        locationManager = LocationManager()
+        locationManager.requestPermission()
     }
 
     func applicationWillResignActive(_ application: UIApplication) {

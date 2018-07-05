@@ -97,45 +97,59 @@ class ViewController: UIViewController {
         guard let anchor = anchor, let radiusAnnotation = radiusOverlay else { return }
         mapView.removeAnnotation(anchor)
         mapView.removeOverlay(radiusAnnotation)
+        if let trackOverlay = trackOverlay {
+            mapView.removeOverlay(trackOverlay)
+        }
     }
 
     // IB Actions
 
     @IBAction func placeAnchor(_ sender: Any) {
-        let userCoordinate = mapView.userLocation.coordinate
-//        let distanceToNewAnchor = userCoordinate.distanceTo(mapView.centerCoordinate)
-
-        if let currentAnchor = anchor {
-            removeAnchorAnnotations()
-
-
-            if currentAnchor.coordinate.distanceTo(userCoordinate) < Anchor.maximumAnchorRadius {
-              mapView.setCenter(currentAnchor.coordinate, animated: true)
-            }
-
-            anchor = Anchor.fetchCurrent(in: context)
-            anchor?.deacticate()
-
-            try! context.save()
-            anchor = nil
+        if anchor == nil {
+            startAnchorWatch()
         } else {
-
-            appDelegate.userNotificationManager.requestPermission()
-            appDelegate.locationManager.requestBackgroundPermission()
-
-            anchor = Anchor.new(in: context)
-            anchor!.coordinate = mapView.centerCoordinate
-            anchor!.setRadius(for: userCoordinate)
-            anchor!.activate()
-
-            try! context.save()
-
-            addAnchorAnnotations(for: anchor!)
-
-            configureData()
+            endAnchorWatch()
         }
 
         updateViews()
+    }
+    @IBAction func startAnchorWatch() {
+        let userCoordinate = mapView.userLocation.coordinate
+
+        appDelegate.userNotificationManager.requestPermission()
+        appDelegate.locationManager.requestBackgroundPermission()
+
+        anchor = Anchor.new(in: context)
+        anchor!.coordinate = mapView.centerCoordinate
+        anchor!.setRadius(for: userCoordinate)
+        anchor!.activate()
+
+        try! context.save()
+
+        addAnchorAnnotations(for: anchor!)
+        configureAnchorLocationsFetch()
+    }
+
+    @IBAction func endAnchorWatch() {
+        guard let currentAnchor = anchor else { return }
+        let userCoordinate = mapView.userLocation.coordinate
+
+        removeAnchorAnnotations()
+
+        if currentAnchor.coordinate.distanceTo(userCoordinate) < Anchor.maximumAnchorRadius {
+            mapView.setCenter(currentAnchor.coordinate, animated: true)
+        }
+
+        anchor = Anchor.fetchCurrent(in: context)
+        anchor?.deacticate()
+
+        try! context.save()
+        anchor = nil
+    }
+
+    private func resetTrack() {
+        trackCoordinates = []
+
     }
 
 }
