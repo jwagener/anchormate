@@ -44,6 +44,7 @@ class UserNotificationManager: NSObject {
     func scheduleFallbackNotification() {
         let content = UNMutableNotificationContent()
         content.body = "WARNING - Anchor Watch could not determine location in the last 5 minutes"
+        content.sound = UNNotificationSound.defaultCriticalSound(withAudioVolume: 1.0)
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5000, repeats: false)
         let request = UNNotificationRequest(identifier: NotificationType.Fallback.rawValue, content: content, trigger: trigger)
 
@@ -57,6 +58,7 @@ class UserNotificationManager: NSObject {
     func sendAnchorAlarmNotification() {
         let content = UNMutableNotificationContent()
         content.body = "ANCHOR ALARM - You've left the safe anchor zone."
+        content.sound = UNNotificationSound.defaultCriticalSound(withAudioVolume: 1.0)
         let request = UNNotificationRequest(identifier: NotificationType.AnchorAlarm.rawValue, content: content, trigger: nil)
 
         notifcationCenter.add(request) {(error) in

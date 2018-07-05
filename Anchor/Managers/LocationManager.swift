@@ -35,9 +35,9 @@ class LocationManager: NSObject {
 
 extension LocationManager: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        appDelegate.userNotificationManager.checkBatteryStatus()
         backgroundContext.performAndWait {
             if let currentAnchor = Anchor.fetchCurrent(in: backgroundContext) {
+                currentAnchor.checkBatteryAlarm()
                 currentAnchor.addCLLocations(locations)
                 try! backgroundContext.save()
             }
