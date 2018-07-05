@@ -30,6 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func setupApplication() {
+        UIDevice.current.isBatteryMonitoringEnabled = true
         backgroundContext = self.persistentContainer.newBackgroundContext()
         setupContextNotificationObserving()
         userNotificationManager = UserNotificationManager()

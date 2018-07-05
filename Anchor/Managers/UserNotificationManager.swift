@@ -1,5 +1,6 @@
 import Foundation
 import UserNotifications
+import UIKit
 
 class UserNotificationManager: NSObject {
     enum NotificationType: String { case AnchorAlarm, BatteryAlarm, Fallback }
@@ -26,6 +27,18 @@ class UserNotificationManager: NSObject {
 
     func cancelFallbackNotification() {
         cancelNotifications(ofType: .Fallback)
+    }
+
+    func sendBatteryAlarmNotification() {
+        let content = UNMutableNotificationContent()
+        content.body = "ANCHOR ALARM - You're battery level is getting low. Please connect your phone."
+        let request = UNNotificationRequest(identifier: NotificationType.AnchorAlarm.rawValue, content: content, trigger: nil)
+
+        notifcationCenter.add(request) {(error) in
+            if let error = error {
+                NSLog("Schedule Notification Error: \(error)")
+            }
+        }
     }
 
     func scheduleFallbackNotification() {

@@ -26,7 +26,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Anchor/Managers/LocationManager.swift"
-            timestampString = "552489404.073349"
+            timestampString = "552492702.2388721"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "27"
@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Anchor/Models/Anchor.swift"
-            timestampString = "552491442.678836"
+            timestampString = "552492702.2389441"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "117"
-            endingLineNumber = "117"
+            startingLineNumber = "122"
+            endingLineNumber = "122"
             landmarkName = "isOutside"
             landmarkType = "24">
          </BreakpointContent>
