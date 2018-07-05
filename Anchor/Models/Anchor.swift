@@ -5,7 +5,7 @@ import MapKit
 private let minimumLocationDistance = 1.0
 private let minimumLocationAccuracy = 10.0
 private let minimumTimeBetweenAlarmNotifications = 5000.0
-private let minimumBatteryLevel = 0.2
+private let minimumBatteryLevel: Float = 0.2
 
 class Anchor: NSManagedObject {
     static var entityName = "Anchor"
@@ -135,6 +135,7 @@ class Anchor: NSManagedObject {
     }
 
     func checkBatteryAlarm() {
+        guard UIDevice.current.batteryState != .charging else { return }
         if UIDevice.current.batteryLevel <= minimumBatteryLevel && shouldSendBatteryAlarm {
             lastBatteryAlarm = Date(timeIntervalSinceNow: 0)
             appDelegate.userNotificationManager.sendBatteryAlarmNotification()
