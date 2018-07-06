@@ -136,9 +136,11 @@ class ViewController: UIViewController {
 
         removeAnchorAnnotations()
 
-        if currentAnchor.coordinate.distanceTo(userCoordinate) < Anchor.maximumAnchorRadius {
+        /*if currentAnchor.coordinate.distanceTo(userCoordinate) < Anchor.maximumAnchorRadius {
             mapView.setCenter(currentAnchor.coordinate, animated: true)
-        }
+        }*/
+
+        mapView.setCenter(userCoordinate, animated: true)
 
         anchor = Anchor.fetchCurrent(in: context)
         anchor?.deacticate()

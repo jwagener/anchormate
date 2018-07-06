@@ -25,6 +25,7 @@ class LocationManager: NSObject {
         clLocationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
         //            clLocationManager.distanceFilter = 1.0
         clLocationManager.showsBackgroundLocationIndicator = true
+        clLocationManager.pausesLocationUpdatesAutomatically = false
         clLocationManager.startUpdatingLocation()
     }
 
@@ -45,8 +46,6 @@ extension LocationManager: CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        NSLog("didchange auth")
-
         if status == .authorizedAlways {
             startMonitoring()
         }

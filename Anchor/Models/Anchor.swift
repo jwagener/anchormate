@@ -19,9 +19,9 @@ class Anchor: NSManagedObject {
     @NSManaged var locations: NSSet
     @NSManaged var radius: Double
 
-    static let minimumAnchorRadius = 5.0
+    static let minimumAnchorRadius = 10.0
     static let maximumAnchorRadius = 100.0
-    static let anchorRadiusFactor = 1.1
+    static let anchorRadiusFactor = 1.3
     static let defaultAnchorRadius = 20.0
 
     var coordinate: CLLocationCoordinate2D {
@@ -48,11 +48,11 @@ class Anchor: NSManagedObject {
     }
 
     func setRadius(for userCoordinate: CLLocationCoordinate2D) {
-        let distance = coordinate.distanceTo(userCoordinate)
+        let distance = coordinate.distanceTo(userCoordinate) * Anchor.anchorRadiusFactor
         if distance < Anchor.minimumAnchorRadius {
             radius = Anchor.defaultAnchorRadius
         } else {
-            radius = distance * Anchor.anchorRadiusFactor
+            radius = distance
         }
     }
 
@@ -91,10 +91,16 @@ class Anchor: NSManagedObject {
 
         let distanceToLastLocation = clLocation.coordinate.distanceTo(orderedLocations.last?.coordinate ?? CLLocationCoordinate2D())
         let distanceToAnchor = clLocation.coordinate.distanceTo(coordinate)
+        let isLocationOutOfAnchorArea = distanceToAnchor - clLocation.horizontalAccuracy - radius > 0.0
 
-        if clLocation.horizontalAccuracy <= minimumLocationAccuracy {
+        if isLocationOutOfAnchorArea {
+            NSLog("got location out of anchor area \(distanceToAnchor) \(clLocation.horizontalAccuracy)")
+        }
+
+        if clLocation.horizontalAccuracy <= minimumLocationAccuracy || isLocationOutOfAnchorArea {
             appDelegate.userNotificationManager.resetFallbackNotification()
 
+            
             if distanceToLastLocation > minimumLocationDistance {
                 let location = Location.new(in: context)
                 location.coordinate = clLocation.coordinate
@@ -119,7 +125,7 @@ class Anchor: NSManagedObject {
         return locations.compactMap { $0 as? Location }.sorted(by: { $0.createdAt < $1.createdAt })
     }
 
-    var isOutside: Bool {
+    var isOutOfAnchorArea: Bool {
         guard let lastLocation = orderedLocations.last else { return false }
         return lastLocation.coordinate.distanceTo(coordinate) > radius
     }
@@ -143,7 +149,7 @@ class Anchor: NSManagedObject {
     }
 
     func checkAlarm() {
-        if isOutside {
+        if isOutOfAnchorArea {
             if shouldSendAnchorAlarm {
                 triggerAlarm()
             } else {

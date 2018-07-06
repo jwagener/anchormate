@@ -31,7 +31,10 @@ class UserNotificationManager: NSObject {
 
     func sendBatteryAlarmNotification() {
         let content = UNMutableNotificationContent()
-        content.body = "ANCHOR ALARM - You're battery level is getting low. Please connect your phone."
+        content.title = "BATTERY WARNING"
+        content.body = "You're battery level is getting low. Please charge your device to continue anchor watch."
+        content.sound = alarmSound
+
         let request = UNNotificationRequest(identifier: NotificationType.AnchorAlarm.rawValue, content: content, trigger: nil)
 
         notifcationCenter.add(request) {(error) in
@@ -41,11 +44,16 @@ class UserNotificationManager: NSObject {
         }
     }
 
+    var alarmSound: UNNotificationSound {
+        return UNNotificationSound(named: UNNotificationSoundName("Alarm.wav"))
+    }
+
     func scheduleFallbackNotification() {
         let content = UNMutableNotificationContent()
-        content.body = "WARNING - Anchor Watch could not determine location in the last 5 minutes"
-        content.sound = UNNotificationSound.defaultCriticalSound(withAudioVolume: 1.0)
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5000, repeats: false)
+        content.title = "ANCHOR WARNING"
+        content.body = "Could not determine your location in the last 5 minutes."
+        content.sound = alarmSound
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
         let request = UNNotificationRequest(identifier: NotificationType.Fallback.rawValue, content: content, trigger: trigger)
 
         notifcationCenter.add(request) {(error) in
@@ -57,8 +65,9 @@ class UserNotificationManager: NSObject {
 
     func sendAnchorAlarmNotification() {
         let content = UNMutableNotificationContent()
-        content.body = "ANCHOR ALARM - You've left the safe anchor zone."
-        content.sound = UNNotificationSound.defaultCriticalSound(withAudioVolume: 1.0)
+        content.title = "ANCHOR ALARM"
+        content.body = "You've left the safe anchor zone."
+        content.sound = alarmSound
         let request = UNNotificationRequest(identifier: NotificationType.AnchorAlarm.rawValue, content: content, trigger: nil)
 
         notifcationCenter.add(request) {(error) in
@@ -97,6 +106,7 @@ class UserNotificationManager: NSObject {
 extension UserNotificationManager: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         /* this makes iOS to present notification also when app is in foreground */
-        completionHandler(.alert)
+        completionHandler([.sound, .alert])
+
     }
 }
