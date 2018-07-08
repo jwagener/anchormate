@@ -1,32 +1,5 @@
-import CoreData
-
-/*extension NSManagedObjectContext {
-    public func performMergeChanges(from note: ContextDidSaveNotification) {
-        perform {
-            self.mergeChanges(fromContextDidSave: note.notification)
-        }
-    }
-
-    public func addContextDidSaveNotificationObserver(handler: ContextDidSaveNotification -> ()) -> NSObjectProtocol {
-        return NSNotificationCenter.defaultCenter().addObserverForName(NSManagedObjectContextDidSaveNotification, object: self, queue: nil, usingBlock: { (note) -> Void in
-            let wrappedNotification = ContextDidSaveNotification(note: note)
-            handler(wrappedNotification)
-        })
-    }
-
-}*/
-
-//
-//  Notifications.swift
-//  Moody
-//
-//  Created by Daniel Eggert on 24/05/2015.
-//  Copyright (c) 2015 objc.io. All rights reserved.
-//
-
 import Foundation
 import CoreData
-
 
 public struct ContextDidSaveNotification {
 

@@ -1,7 +1,7 @@
 import CoreLocation
 import CoreData
 
-class LocationManager: NSObject {
+class LocationManager: NSObject, CLLocationManagerDelegate {
     let clLocationManager = CLLocationManager()
     var backgroundContext: NSManagedObjectContext {
         return appDelegate.backgroundContext
@@ -23,7 +23,6 @@ class LocationManager: NSObject {
     func startMonitoring() {
         clLocationManager.allowsBackgroundLocationUpdates = true
         clLocationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
-        //            clLocationManager.distanceFilter = 1.0
         clLocationManager.showsBackgroundLocationIndicator = true
         clLocationManager.pausesLocationUpdatesAutomatically = false
         clLocationManager.startUpdatingLocation()
@@ -32,9 +31,7 @@ class LocationManager: NSObject {
     func stopMonitoring() {
         clLocationManager.stopUpdatingLocation()
     }
-}
 
-extension LocationManager: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         backgroundContext.performAndWait {
             if let currentAnchor = Anchor.fetchCurrent(in: backgroundContext) {
@@ -51,8 +48,3 @@ extension LocationManager: CLLocationManagerDelegate {
         }
     }
 }
-
-extension NotificationCenter {
-    static var didUpdateLocationsNotification = Notification.Name("didReceiveData")
-}
-
