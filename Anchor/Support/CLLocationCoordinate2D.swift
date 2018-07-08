@@ -6,3 +6,14 @@ extension CLLocationCoordinate2D {
         return MKMapPoint(self).distance(to: MKMapPoint(otherCoordinate))
     }
 }
+
+
+// TODO skip in new cocoa sdk
+extension MKMapPoint {
+    init(_ coordinate: CLLocationCoordinate2D) {
+        self = MKMapPointForCoordinate(coordinate)
+    }
+    func distance(to otherPoint: MKMapPoint) -> CLLocationDistance {
+        return MKMetersBetweenMapPoints(self, otherPoint)
+    }
+}

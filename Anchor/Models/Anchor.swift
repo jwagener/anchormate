@@ -169,4 +169,5 @@ class Anchor: NSManagedObject {
 
 extension Anchor: MKAnnotation {
     var title: String? { return "Anchor" }
+//    var subtitle: String? { return "\(radius)m Radius" }
 }

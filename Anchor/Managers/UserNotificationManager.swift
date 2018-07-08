@@ -2,6 +2,8 @@ import Foundation
 import UserNotifications
 import UIKit
 
+private let fallbackNotificationInterval = 5000.0
+
 class UserNotificationManager: NSObject {
     enum NotificationType: String { case AnchorAlarm, BatteryAlarm, Fallback }
 
@@ -15,7 +17,7 @@ class UserNotificationManager: NSObject {
     }
 
     func requestPermission() {
-        notifcationCenter.requestAuthorization(options: [.alert, .sound, .badge, .criticalAlert]) { (authorized, error) in
+        notifcationCenter.requestAuthorization(options: [.alert, .sound, .badge]) { (authorized, error) in
             NSLog("Notifcation Authorized")
         }
     }
@@ -34,18 +36,12 @@ class UserNotificationManager: NSObject {
         content.title = "BATTERY WARNING"
         content.body = "You're battery level is getting low. Please charge your device to continue anchor watch."
         content.sound = alarmSound
-
-        let request = UNNotificationRequest(identifier: NotificationType.AnchorAlarm.rawValue, content: content, trigger: nil)
-
-        notifcationCenter.add(request) {(error) in
-            if let error = error {
-                NSLog("Schedule Notification Error: \(error)")
-            }
-        }
+        sendNotification(type: .BatteryAlarm, content: content)
     }
 
+
     var alarmSound: UNNotificationSound {
-        return UNNotificationSound(named: UNNotificationSoundName("Alarm.wav"))
+        return UNNotificationSound(named: "Alarm.wav")
     }
 
     func scheduleFallbackNotification() {
@@ -53,14 +49,9 @@ class UserNotificationManager: NSObject {
         content.title = "ANCHOR WARNING"
         content.body = "Could not determine your location in the last 5 minutes."
         content.sound = alarmSound
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
-        let request = UNNotificationRequest(identifier: NotificationType.Fallback.rawValue, content: content, trigger: trigger)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: fallbackNotificationInterval, repeats: false)
 
-        notifcationCenter.add(request) {(error) in
-            if let error = error {
-                NSLog("Schedule Notification Error: \(error)")
-            }
-        }
+        sendNotification(type: .Fallback, content: content, trigger: trigger)
     }
 
     func sendAnchorAlarmNotification() {
@@ -68,13 +59,7 @@ class UserNotificationManager: NSObject {
         content.title = "ANCHOR ALARM"
         content.body = "You've left the safe anchor zone."
         content.sound = alarmSound
-        let request = UNNotificationRequest(identifier: NotificationType.AnchorAlarm.rawValue, content: content, trigger: nil)
-
-        notifcationCenter.add(request) {(error) in
-            if let error = error {
-                NSLog("Schedule Notification Error: \(error)")
-            }
-        }
+        sendNotification(type: .AnchorAlarm, content: content)
     }
 
     private func cancelNotifications(ofType type: NotificationType) {
@@ -90,16 +75,13 @@ class UserNotificationManager: NSObject {
         notifcationCenter.removeDeliveredNotifications(withIdentifiers: [type.rawValue])
     }
 
-    private func sendNotification(_ text: String) {
-//        let content = UNMutableNotificationContent()
-//        content.body = text
-//        let request = UNNotificationRequest(identifier: NotificationType.Driving.rawValue, content: content, trigger: nil)
-//
-//        notifcationCenter.add(request) {(error) in
-//            if let error = error {
-//                NSLog("Schedule Notification Error: \(error)")
-//            }
-//        }
+    private func sendNotification(type: NotificationType, content: UNNotificationContent, trigger: UNNotificationTrigger? = nil) {
+        let request = UNNotificationRequest(identifier: type.rawValue, content: content, trigger: trigger)
+        notifcationCenter.add(request) {(error) in
+            if let error = error {
+                NSLog("Schedule Notification Error: \(error)")
+            }
+        }
     }
 }
 

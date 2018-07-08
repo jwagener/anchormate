@@ -11,12 +11,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var userNotificationManager: UserNotificationManager!
 
     var viewContext: NSManagedObjectContext {
+
         return persistentContainer.viewContext
     }
 
     var backgroundContext: NSManagedObjectContext!
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         persistentContainer = NSPersistentContainer(name: "Anchor")
         persistentContainer.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {

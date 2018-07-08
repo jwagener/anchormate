@@ -47,7 +47,7 @@ class ViewController: UIViewController {
 
         trackCoordinates = (fetchedResultsController?.fetchedObjects ?? []).map { $0.coordinate }
         trackOverlay = MKPolyline(coordinates: trackCoordinates, count: trackCoordinates.count)
-        mapView.addOverlay(trackOverlay!)
+        mapView.add(trackOverlay!)
     }
 
     private func configureViews() {
@@ -66,11 +66,11 @@ class ViewController: UIViewController {
     private func updateViews() {
         if let _ = anchor {
             anchorPlaceholderView.isHidden = true
-            primaryButton.backgroundColor = .alertRed
+            primaryButton.backgroundColor = .mateRed
             primaryButton.setTitle("Stop Anchor Watch", for: .normal)
         }else {
             anchorPlaceholderView.isHidden = false
-            primaryButton.backgroundColor = .placedAnchor
+            primaryButton.backgroundColor = .mateBlue
             primaryButton.setTitle("Place Anchor", for: .normal)
         }
     }
@@ -89,16 +89,16 @@ class ViewController: UIViewController {
     func addAnchorAnnotations(for anchor: Anchor) {
         radiusOverlay = MKCircle(center: anchor.coordinate, radius: anchor.radius)
         mapView.addAnnotation(anchor)
-        mapView.addOverlay(radiusOverlay!)
+        mapView.add(radiusOverlay!)
         mapView.selectAnnotation(anchor, animated: true)
     }
 
     func removeAnchorAnnotations(){
         guard let anchor = anchor, let radiusAnnotation = radiusOverlay else { return }
         mapView.removeAnnotation(anchor)
-        mapView.removeOverlay(radiusAnnotation)
+        mapView.remove(radiusAnnotation)
         if let trackOverlay = trackOverlay {
-            mapView.removeOverlay(trackOverlay)
+            mapView.remove(trackOverlay)
         }
     }
 
@@ -131,17 +131,11 @@ class ViewController: UIViewController {
     }
 
     @IBAction func endAnchorWatch() {
-        guard let currentAnchor = anchor else { return }
+        guard let _ = anchor else { return }
         let userCoordinate = mapView.userLocation.coordinate
 
         removeAnchorAnnotations()
-
-        /*if currentAnchor.coordinate.distanceTo(userCoordinate) < Anchor.maximumAnchorRadius {
-            mapView.setCenter(currentAnchor.coordinate, animated: true)
-        }*/
-
         mapView.setCenter(userCoordinate, animated: true)
-
         anchor = Anchor.fetchCurrent(in: context)
         anchor?.deacticate()
 
@@ -160,13 +154,13 @@ extension ViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         if let circleOverlay = overlay as? MKCircle {
             let renderer = MKCircleRenderer(circle: circleOverlay)
-            renderer.fillColor = UIColor.alertRed.withAlphaComponent(0.2)
-            renderer.strokeColor = UIColor.alertRed.withAlphaComponent(0.9)
+            renderer.fillColor = UIColor.mateRed.withAlphaComponent(0.2)
+            renderer.strokeColor = UIColor.mateRed.withAlphaComponent(0.9)
             renderer.lineWidth = 4.0
             return renderer
         } else if let lineOverlay = overlay as? MKPolyline {
             let renderer = MKPolylineRenderer(polyline: lineOverlay)
-            renderer.strokeColor = UIColor.placedAnchor.withAlphaComponent(0.4)
+            renderer.strokeColor = UIColor.mateYellow.withAlphaComponent(0.4)
             renderer.lineWidth = 4.0
             return renderer
         } else {
@@ -175,7 +169,6 @@ extension ViewController: MKMapViewDelegate {
     }
 
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        //NSLog("annotation view for \(annotation)")
         switch annotation {
         case is Anchor:   return viewForAnchorAnnotation(annotation as! Anchor)
         case is Location: return viewForLocationAnnotation(annotation as! Location)
@@ -190,10 +183,10 @@ extension ViewController: MKMapViewDelegate {
         annotationView.annotation = annotation
         annotationView.canShowCallout = false
         annotationView.glyphImage = UIImage(named: "anchor5")
-        annotationView.markerTintColor = UIColor(named: "PlacedAnchor")!
+        annotationView.markerTintColor = UIColor.mateBlue
         annotationView.animatesWhenAdded = true
+        annotationView.canShowCallout = false
         return annotationView
-
     }
 
     private func viewForLocationAnnotation(_ annotation: Location) -> MKPinAnnotationView {
@@ -213,15 +206,14 @@ extension ViewController: NSFetchedResultsControllerDelegate {
         case .insert:
             if let location = anObject as? Location {
                 if let trackOverlay = trackOverlay {
-                    mapView.removeOverlay(trackOverlay)
+                    mapView.remove(trackOverlay)
                     trackCoordinates.append(location.coordinate)
                     self.trackOverlay = MKPolyline(coordinates: trackCoordinates, count: trackCoordinates.count)
-                    mapView.addOverlay(self.trackOverlay!)
+                    mapView.add(self.trackOverlay!)
                 }
             }
         default:
             return
-            //NSLog("weird change \(type.rawValue)")
         }
     }
 }
