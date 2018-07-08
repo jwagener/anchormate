@@ -3,51 +3,30 @@ import MapKit
 import CoreData
 
 class ViewController: UIViewController {
+    override var preferredStatusBarStyle: UIStatusBarStyle { return .lightContent }
+
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var primaryButton: UIButton!
     @IBOutlet weak var anchorPlaceholderView: UIView!
     private var placeholderAnchorMarkerView: UIView?
 
+    private var fetchedResultsController: NSFetchedResultsController<Location>?
     private var context: NSManagedObjectContext {
         return appDelegate.persistentContainer.viewContext
     }
 
-    var fetchedResultsController: NSFetchedResultsController<Location>?
-
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
-    }
 
     var anchor: Anchor?
     private var radiusOverlay: MKCircle?
     private var trackOverlay: MKPolyline?
     private var trackCoordinates: [CLLocationCoordinate2D] = []
 
+    // View Setup and Updating
+
     override func viewDidLoad() {
         super.viewDidLoad()
         configureData()
         configureViews()
-
-    }
-
-    private func configureData() {
-        anchor = Anchor.fetchCurrent(in: context)
-        if let _ = anchor {
-            configureAnchorLocationsFetch()
-        }
-    }
-
-    private func configureAnchorLocationsFetch() {
-        guard let anchor = anchor else { return }
-        fetchedResultsController = NSFetchedResultsController(fetchRequest: anchor.locationsFetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
-        fetchedResultsController?.delegate = self
-
-        try! fetchedResultsController?.performFetch()
-        NSLog("Initial Fetch Location \(fetchedResultsController?.fetchedObjects?.count)")
-
-        trackCoordinates = (fetchedResultsController?.fetchedObjects ?? []).map { $0.coordinate }
-        trackOverlay = MKPolyline(coordinates: trackCoordinates, count: trackCoordinates.count)
-        mapView.add(trackOverlay!)
     }
 
     private func configureViews() {
@@ -75,10 +54,34 @@ class ViewController: UIViewController {
         }
     }
 
+    /// Data Fetching
+
+    private func configureData() {
+        anchor = Anchor.fetchCurrent(in: context)
+        if let _ = anchor {
+            configureAnchorLocationsFetch()
+        }
+    }
+
+    private func configureAnchorLocationsFetch() {
+        guard let anchor = anchor else { return }
+
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: anchor.locationsFetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+        fetchedResultsController?.delegate = self
+
+        try! fetchedResultsController?.performFetch()
+
+        trackCoordinates = (fetchedResultsController?.fetchedObjects ?? []).map { $0.coordinate }
+        trackOverlay = MKPolyline(coordinates: trackCoordinates, count: trackCoordinates.count)
+        mapView.add(trackOverlay!)
+    }
+
+    /// Map Annotations
+
     private func addPlaceholderAnchor() {
         let marker = MKMarkerAnnotationView(annotation: MKPointAnnotation(), reuseIdentifier: "Marker")
         marker.canShowCallout = false
-        marker.glyphImage = UIImage(named: "anchor5")
+        marker.glyphImage = UIImage(named: "Anchor Symbol")
         marker.markerTintColor = .gray
         marker.isSelected = true
         marker.translatesAutoresizingMaskIntoConstraints = false
@@ -104,7 +107,7 @@ class ViewController: UIViewController {
 
     // IB Actions
 
-    @IBAction func placeAnchor(_ sender: Any) {
+    @IBAction func handlePrimaryButtonTap(_ sender: Any) {
         if anchor == nil {
             startAnchorWatch()
         } else {
@@ -113,6 +116,7 @@ class ViewController: UIViewController {
 
         updateViews()
     }
+
     @IBAction func startAnchorWatch() {
         let userCoordinate = mapView.userLocation.coordinate
 
@@ -145,9 +149,7 @@ class ViewController: UIViewController {
 
     private func resetTrack() {
         trackCoordinates = []
-
     }
-
 }
 
 extension ViewController: MKMapViewDelegate {
@@ -171,7 +173,6 @@ extension ViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         switch annotation {
         case is Anchor:   return viewForAnchorAnnotation(annotation as! Anchor)
-        case is Location: return viewForLocationAnnotation(annotation as! Location)
         default: return nil
         }
     }
@@ -186,15 +187,6 @@ extension ViewController: MKMapViewDelegate {
         annotationView.markerTintColor = UIColor.mateBlue
         annotationView.animatesWhenAdded = true
         annotationView.canShowCallout = false
-        return annotationView
-    }
-
-    private func viewForLocationAnnotation(_ annotation: Location) -> MKPinAnnotationView {
-        let reuseId = "Location"
-
-        let annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView ?? MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
-
-        annotationView.annotation = annotation
         return annotationView
     }
 }
