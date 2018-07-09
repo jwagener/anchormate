@@ -11,6 +11,10 @@ class UserNotificationManager: NSObject {
         return UNUserNotificationCenter.current()
     }
 
+    private var alarmSound: UNNotificationSound {
+        return UNNotificationSound(named: "Alarm.wav")
+    }
+
     override init() {
         super.init()
         notifcationCenter.delegate = self
@@ -22,44 +26,15 @@ class UserNotificationManager: NSObject {
         }
     }
 
-    func resetFallbackNotification() {
-        cancelFallbackNotification()
-        scheduleFallbackNotification()
-    }
+    /// Generic Notificaton Methods
 
-    func cancelFallbackNotification() {
-        cancelNotifications(ofType: .Fallback)
-    }
-
-    func sendBatteryAlarmNotification() {
-        let content = UNMutableNotificationContent()
-        content.title = "BATTERY WARNING"
-        content.body = "You're battery level is getting low. Please charge your device to continue anchor watch."
-        content.sound = alarmSound
-        sendNotification(type: .BatteryAlarm, content: content)
-    }
-
-
-    var alarmSound: UNNotificationSound {
-        return UNNotificationSound(named: "Alarm.wav")
-    }
-
-    func scheduleFallbackNotification() {
-        let content = UNMutableNotificationContent()
-        content.title = "ANCHOR WARNING"
-        content.body = "Could not determine your location in the last 5 minutes."
-        content.sound = alarmSound
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: fallbackNotificationInterval, repeats: false)
-
-        sendNotification(type: .Fallback, content: content, trigger: trigger)
-    }
-
-    func sendAnchorAlarmNotification() {
-        let content = UNMutableNotificationContent()
-        content.title = "ANCHOR ALARM"
-        content.body = "You've left the safe anchor zone."
-        content.sound = alarmSound
-        sendNotification(type: .AnchorAlarm, content: content)
+    private func sendNotification(type: NotificationType, content: UNNotificationContent, trigger: UNNotificationTrigger? = nil) {
+        let request = UNNotificationRequest(identifier: type.rawValue, content: content, trigger: trigger)
+        notifcationCenter.add(request) {(error) in
+            if let error = error {
+                NSLog("Schedule Notification Error: \(error)")
+            }
+        }
     }
 
     private func cancelNotifications(ofType type: NotificationType) {
@@ -75,20 +50,47 @@ class UserNotificationManager: NSObject {
         notifcationCenter.removeDeliveredNotifications(withIdentifiers: [type.rawValue])
     }
 
-    private func sendNotification(type: NotificationType, content: UNNotificationContent, trigger: UNNotificationTrigger? = nil) {
-        let request = UNNotificationRequest(identifier: type.rawValue, content: content, trigger: trigger)
-        notifcationCenter.add(request) {(error) in
-            if let error = error {
-                NSLog("Schedule Notification Error: \(error)")
-            }
-        }
+    /// Specific Notification Methods
+
+    func sendBatteryAlarmNotification() {
+        let content = UNMutableNotificationContent()
+        content.title = "BATTERY WARNING"
+        content.body = "You're battery level is getting low. Please charge your device to continue anchor watch."
+        content.sound = alarmSound
+        sendNotification(type: .BatteryAlarm, content: content)
+    }
+
+    func sendAnchorAlarmNotification() {
+        let content = UNMutableNotificationContent()
+        content.title = "ANCHOR ALARM"
+        content.body = "You've left the safe anchor zone."
+        content.sound = alarmSound
+        sendNotification(type: .AnchorAlarm, content: content)
+    }
+
+    func scheduleFallbackNotification() {
+        let content = UNMutableNotificationContent()
+        content.title = "ANCHOR WARNING"
+        content.body = "Could not determine your location in the last 5 minutes."
+        content.sound = alarmSound
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: fallbackNotificationInterval, repeats: false)
+
+        sendNotification(type: .Fallback, content: content, trigger: trigger)
+    }
+
+    func resetFallbackNotification() {
+        cancelFallbackNotification()
+        scheduleFallbackNotification()
+    }
+
+    func cancelFallbackNotification() {
+        cancelNotifications(ofType: .Fallback)
     }
 }
 
 extension UserNotificationManager: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        /* this makes iOS to present notification also when app is in foreground */
+        /* Present notifications as usual, when app is in foreground */
         completionHandler([.sound, .alert])
-
     }
 }
