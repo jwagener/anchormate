@@ -20,9 +20,12 @@ class Anchor: NSManagedObject {
     @NSManaged var radius: Double
 
     static let minimumAnchorRadius = 10.0
-    static let maximumAnchorRadius = 100.0
+    static let maximumAnchorRadius = 200.0
     static let anchorRadiusFactor = 1.3
     static let defaultAnchorRadius = 20.0
+
+    var subtitle: String? = ""
+    var title: String? = ""
 
     var coordinate: CLLocationCoordinate2D {
         get {
@@ -173,6 +176,4 @@ class Anchor: NSManagedObject {
     }
 }
 
-extension Anchor: MKAnnotation {
-    var title: String? { return "Anchor"}
-}
+extension Anchor: MKAnnotation {}

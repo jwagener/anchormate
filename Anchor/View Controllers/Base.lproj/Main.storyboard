@@ -36,7 +36,7 @@
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fao-dg-BHi">
                                         <rect key="frame" x="0.0" y="0.0" width="343" height="44"/>
-                                        <color key="backgroundColor" name="PlacedAnchor"/>
+                                        <color key="backgroundColor" name="Mate Blue"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
                                         <state key="normal" title="Place Anchor">
                                             <color key="titleColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
@@ -77,8 +77,8 @@
         </scene>
     </scenes>
     <resources>
-        <namedColor name="PlacedAnchor">
-            <color red="0.078000001609325409" green="0.55699998140335083" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        <namedColor name="Mate Blue">
+            <color red="0.29800000786781311" green="0.45500001311302185" blue="0.76099997758865356" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
     </resources>
 </document>

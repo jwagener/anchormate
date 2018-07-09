@@ -161,18 +161,16 @@ class ViewController: UIViewController {
         updateViews()
     }
 
-    @IBAction func decreaseRadius(_ sender: UIButton) {
-        changeRadius(by: 1 / radiusChangeFactor)
+
+    @IBAction private func slideRadius(_ sender: UISlider) {
+        let value = sender.value - sender.value.truncatingRemainder(dividingBy: 5.0)
+        changeRadius(to: Double(value))
     }
 
-    @IBAction func increaseRadius(_ sender: UIButton) {
-        changeRadius(by: radiusChangeFactor)
-    }
-
-    private func changeRadius(by factor: Double) {
+    private func changeRadius(to radius: Double) {
         guard let anchor = anchor else { return }
-        anchor.setRadius(anchor.radius * factor)
-        try! context.save()
+        anchor.setRadius(radius)
+        try? context.save()
         removeRadiusOverlay()
         addRadiusOverlay()
     }
@@ -215,17 +213,19 @@ extension ViewController: MKMapViewDelegate {
         annotationView.markerTintColor = UIColor.mateRed
         annotationView.animatesWhenAdded = true
 
-        let buttonLeft = AnchorAnnotationCalloutButton()
-        buttonLeft.addTarget(nil, action: #selector(decreaseRadius(_:)), for: .primaryActionTriggered)
-        buttonLeft.setTitle("-", for: .normal)
+        let detailView = UISlider(frame: .zero)
 
-        let buttonRight = AnchorAnnotationCalloutButton()
-        buttonRight.addTarget(nil, action: #selector(increaseRadius(_:)), for: .primaryActionTriggered)
-        buttonRight.setTitle("+", for: .normal)
+        NSLayoutConstraint.activate([
+            NSLayoutConstraint(item: detailView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 250.0),
+            NSLayoutConstraint(item: detailView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 40.0)
+        ])
 
-        annotationView.leftCalloutAccessoryView = buttonLeft
-        annotationView.rightCalloutAccessoryView = buttonRight
-
+        detailView.isContinuous = true
+        detailView.minimumValue = Float(Anchor.minimumAnchorRadius)
+        detailView.value = Float(annotation.radius)
+        detailView.maximumValue = Float(Anchor.maximumAnchorRadius)
+        detailView.addTarget(nil, action: #selector(slideRadius(_:)), for: .valueChanged)
+        annotationView.detailCalloutAccessoryView = detailView
         return annotationView
     }
 }
