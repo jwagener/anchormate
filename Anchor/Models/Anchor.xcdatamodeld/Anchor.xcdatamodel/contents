@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14270.9" systemVersion="" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14135" systemVersion="18A326g" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Anchor" representedClassName=".Anchor" syncable="YES">
         <attribute name="active" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
@@ -10,13 +10,7 @@
         <attribute name="longitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="radius" attributeType="Double" defaultValueString="20" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="verticalAccuracy" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
-        <relationship name="events" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Event" inverseName="alarm" inverseEntity="Event" syncable="YES"/>
         <relationship name="locations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Location" inverseName="anchor" inverseEntity="Location" syncable="YES"/>
-    </entity>
-    <entity name="Event" representedClassName="Event" syncable="YES">
-        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="alarm" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Anchor" inverseName="events" inverseEntity="Anchor" syncable="YES"/>
     </entity>
     <entity name="Location" representedClassName=".Location" syncable="YES">
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
@@ -25,8 +19,7 @@
         <relationship name="anchor" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Anchor" inverseName="locations" inverseEntity="Anchor" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Anchor" positionX="-63" positionY="-18" width="128" height="210"/>
-        <element name="Event" positionX="-36" positionY="45" width="128" height="90"/>
+        <element name="Anchor" positionX="-63" positionY="-18" width="128" height="195"/>
         <element name="Location" positionX="-54" positionY="-9" width="128" height="105"/>
     </elements>
 </model>
