@@ -1,8 +1,9 @@
 import Foundation
 import CoreData
 
-public struct ContextDidSaveNotification {
+// TODO: Refactor this into a CoreDataManager
 
+public struct ContextDidSaveNotification {
     public init(note: Notification) {
         guard note.name == .NSManagedObjectContextDidSave else { fatalError() }
         notification = note
@@ -160,8 +161,4 @@ extension NSManagedObjectContext {
             self.mergeChanges(fromContextDidSave: note.notification)
         }
     }
-
 }
-
-
-

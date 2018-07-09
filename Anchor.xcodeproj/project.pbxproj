@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B0C206920F3585F00F2B715 /* AnchorAnnotationCalloutButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B0C206820F3585F00F2B715 /* AnchorAnnotationCalloutButton.swift */; };
 		1B80C48E20E9701C0083357E /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B80C48D20E9701C0083357E /* LocationManager.swift */; };
 		1B80C49420E98CE50083357E /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B80C49320E98CE50083357E /* Location.swift */; };
 		1B80C49620E98CEF0083357E /* Anchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B80C49520E98CEF0083357E /* Anchor.swift */; };
@@ -27,6 +28,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1B0C206820F3585F00F2B715 /* AnchorAnnotationCalloutButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnchorAnnotationCalloutButton.swift; sourceTree = "<group>"; };
 		1B80C48D20E9701C0083357E /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		1B80C49320E98CE50083357E /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		1B80C49520E98CEF0083357E /* Anchor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Anchor.swift; sourceTree = "<group>"; };
@@ -59,6 +61,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1B0C206720F3583100F2B715 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				1B0C206820F3585F00F2B715 /* AnchorAnnotationCalloutButton.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		1B80C48F20E982840083357E /* Support */ = {
 			isa = PBXGroup;
 			children = (
@@ -123,6 +133,7 @@
 				1B80C49220E98CBA0083357E /* Models */,
 				1B80C48F20E982840083357E /* Support */,
 				1B80C49D20EA3F170083357E /* View Controllers */,
+				1B0C206720F3583100F2B715 /* Views */,
 				1B9EFFCD20E6D7B9006102BD /* AppDelegate.swift */,
 				1B9EFFD720E6D7BA006102BD /* Assets.xcassets */,
 				1B9EFFDC20E6D7BA006102BD /* Info.plist */,
@@ -211,6 +222,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1B80C48E20E9701C0083357E /* LocationManager.swift in Sources */,
+				1B0C206920F3585F00F2B715 /* AnchorAnnotationCalloutButton.swift in Sources */,
 				1B80C49620E98CEF0083357E /* Anchor.swift in Sources */,
 				1B9EFFD620E6D7B9006102BD /* Anchor.xcdatamodeld in Sources */,
 				1B9EFFD020E6D7B9006102BD /* ViewController.swift in Sources */,

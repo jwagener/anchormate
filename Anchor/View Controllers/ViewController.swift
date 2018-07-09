@@ -2,12 +2,15 @@ import UIKit
 import MapKit
 import CoreData
 
+private let radiusChangeFactor = 1.25
+
 class ViewController: UIViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle { return .lightContent }
 
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var primaryButton: UIButton!
     @IBOutlet weak var anchorPlaceholderView: UIView!
+
     private var placeholderAnchorMarkerView: UIView?
 
     private var fetchedResultsController: NSFetchedResultsController<Location>?
@@ -15,8 +18,8 @@ class ViewController: UIViewController {
         return appDelegate.persistentContainer.viewContext
     }
 
-
     var anchor: Anchor?
+
     private var radiusOverlay: MKCircle?
     private var trackOverlay: MKPolyline?
     private var trackCoordinates: [CLLocationCoordinate2D] = []
@@ -42,7 +45,6 @@ class ViewController: UIViewController {
 
     private func updateViews() {
         if let anchor = anchor {
-
             removeAnchorAnnotations()
             addAnchorAnnotations(for: anchor)
 
@@ -140,10 +142,8 @@ class ViewController: UIViewController {
 
         try! context.save()
 
-//        addAnchorAnnotations(for: anchor!)
         configureAnchorLocationsFetch()
         updateViews()
-
     }
 
     @IBAction func endAnchorWatch() {
@@ -162,16 +162,16 @@ class ViewController: UIViewController {
     }
 
     @IBAction func decreaseRadius(_ sender: UIButton) {
-        guard let anchor = anchor else { return }
-        anchor.setRadius(anchor.radius / 1.25)
-        try! context.save()
-        removeRadiusOverlay()
-        addRadiusOverlay()
+        changeRadius(by: 1 / radiusChangeFactor)
     }
 
     @IBAction func increaseRadius(_ sender: UIButton) {
+        changeRadius(by: radiusChangeFactor)
+    }
+
+    private func changeRadius(by factor: Double) {
         guard let anchor = anchor else { return }
-        anchor.setRadius(anchor.radius * 1.25)
+        anchor.setRadius(anchor.radius * factor)
         try! context.save()
         removeRadiusOverlay()
         addRadiusOverlay()
@@ -182,7 +182,7 @@ extension ViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         if let circleOverlay = overlay as? MKCircle {
             let renderer = MKCircleRenderer(circle: circleOverlay)
-            renderer.fillColor = UIColor.mateRed.withAlphaComponent(0.2)
+            renderer.fillColor   = UIColor.mateRed.withAlphaComponent(0.2)
             renderer.strokeColor = UIColor.mateRed.withAlphaComponent(0.9)
             renderer.lineWidth = 4.0
             return renderer
@@ -198,8 +198,10 @@ extension ViewController: MKMapViewDelegate {
 
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         switch annotation {
-        case is Anchor:   return viewForAnchorAnnotation(annotation as! Anchor)
-        default: return nil
+        case is Anchor:
+            return viewForAnchorAnnotation(annotation as! Anchor)
+        default:
+            return nil
         }
     }
 
@@ -213,21 +215,16 @@ extension ViewController: MKMapViewDelegate {
         annotationView.markerTintColor = UIColor.mateRed
         annotationView.animatesWhenAdded = true
 
-        let buttonLeft = UIButton(frame: CGRect(x: 0, y: 0, width: 44.0, height: 44.0))
-        let buttonRight = UIButton(frame: CGRect(x: 0, y: 0, width: 44.0, height: 44.0))
-        //button.backgroundColor = .red
-        buttonRight.setTitleColor(.black, for: .normal)
-        buttonLeft.setTitleColor(.black, for: .normal)
-        buttonLeft.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18.0)
-        buttonRight.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18.0)
-
+        let buttonLeft = AnchorAnnotationCalloutButton()
         buttonLeft.addTarget(nil, action: #selector(decreaseRadius(_:)), for: .primaryActionTriggered)
-        buttonRight.addTarget(nil, action: #selector(increaseRadius(_:)), for: .primaryActionTriggered)
-
-        buttonRight.setTitle("+", for: .normal)
         buttonLeft.setTitle("-", for: .normal)
-        annotationView.rightCalloutAccessoryView = buttonRight
+
+        let buttonRight = AnchorAnnotationCalloutButton()
+        buttonRight.addTarget(nil, action: #selector(increaseRadius(_:)), for: .primaryActionTriggered)
+        buttonRight.setTitle("+", for: .normal)
+
         annotationView.leftCalloutAccessoryView = buttonLeft
+        annotationView.rightCalloutAccessoryView = buttonRight
 
         return annotationView
     }
