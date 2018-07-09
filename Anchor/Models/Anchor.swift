@@ -54,6 +54,12 @@ class Anchor: NSManagedObject {
         } else {
             radius = distance
         }
+
+        setRadius(radius)
+    }
+
+    func setRadius(_ newRadius: Double) {
+        self.radius = newRadius
     }
 
     class func new(in context: NSManagedObjectContext) -> Anchor {
@@ -168,6 +174,5 @@ class Anchor: NSManagedObject {
 }
 
 extension Anchor: MKAnnotation {
-    var title: String? { return "Anchor" }
-//    var subtitle: String? { return "\(radius)m Radius" }
+    var title: String? { return "Anchor"}
 }

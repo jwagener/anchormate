@@ -21,7 +21,7 @@ class ViewController: UIViewController {
     private var trackOverlay: MKPolyline?
     private var trackCoordinates: [CLLocationCoordinate2D] = []
 
-    // View Setup and Updating
+    /// View Setup and Updating
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,25 +29,27 @@ class ViewController: UIViewController {
         configureViews()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        updateViews()
+    }
+
     private func configureViews() {
         addPlaceholderAnchor()
         mapView.userTrackingMode = .follow
         mapView.setUserTrackingMode(.follow, animated: true)
         mapView.delegate = self
-
-        if let anchor = anchor {
-            addAnchorAnnotations(for: anchor)
-        }
-
-        updateViews()
     }
 
     private func updateViews() {
-        if let _ = anchor {
+        if let anchor = anchor {
+
+            removeAnchorAnnotations()
+            addAnchorAnnotations(for: anchor)
+
             anchorPlaceholderView.isHidden = true
             primaryButton.backgroundColor = .mateRed
             primaryButton.setTitle("Stop Anchor Watch", for: .normal)
-        }else {
+        } else {
             anchorPlaceholderView.isHidden = false
             primaryButton.backgroundColor = .mateBlue
             primaryButton.setTitle("Place Anchor", for: .normal)
@@ -81,25 +83,35 @@ class ViewController: UIViewController {
     private func addPlaceholderAnchor() {
         let marker = MKMarkerAnnotationView(annotation: MKPointAnnotation(), reuseIdentifier: "Marker")
         marker.canShowCallout = false
-        marker.glyphImage = UIImage(named: "Anchor Symbol")
+        marker.glyphImage = UIImage.anchorSymbol
         marker.markerTintColor = .gray
-        marker.isSelected = true
+        marker.rightCalloutAccessoryView = UIButton()
         marker.translatesAutoresizingMaskIntoConstraints = false
         anchorPlaceholderView.addSubview(marker)
     }
 
 
-    func addAnchorAnnotations(for anchor: Anchor) {
-        radiusOverlay = MKCircle(center: anchor.coordinate, radius: anchor.radius)
+    private func addAnchorAnnotations(for anchor: Anchor) {
         mapView.addAnnotation(anchor)
-        mapView.add(radiusOverlay!)
-        mapView.selectAnnotation(anchor, animated: true)
+        addRadiusOverlay()
     }
 
-    func removeAnchorAnnotations(){
-        guard let anchor = anchor, let radiusAnnotation = radiusOverlay else { return }
+    private func addRadiusOverlay() {
+        guard let anchor = anchor else { return }
+        radiusOverlay = MKCircle(center: anchor.coordinate, radius: anchor.radius)
+        mapView.add(radiusOverlay!)
+    }
+
+    private func removeRadiusOverlay() {
+        guard let radiusOverlay = radiusOverlay else { return }
+        mapView.remove(radiusOverlay)
+        self.radiusOverlay = nil
+    }
+
+    private func removeAnchorAnnotations(){
+        guard let anchor = anchor else { return }
         mapView.removeAnnotation(anchor)
-        mapView.remove(radiusAnnotation)
+        removeRadiusOverlay()
         if let trackOverlay = trackOverlay {
             mapView.remove(trackOverlay)
         }
@@ -113,8 +125,6 @@ class ViewController: UIViewController {
         } else {
             endAnchorWatch()
         }
-
-        updateViews()
     }
 
     @IBAction func startAnchorWatch() {
@@ -130,8 +140,10 @@ class ViewController: UIViewController {
 
         try! context.save()
 
-        addAnchorAnnotations(for: anchor!)
+//        addAnchorAnnotations(for: anchor!)
         configureAnchorLocationsFetch()
+        updateViews()
+
     }
 
     @IBAction func endAnchorWatch() {
@@ -145,10 +157,24 @@ class ViewController: UIViewController {
 
         try! context.save()
         anchor = nil
+
+        updateViews()
     }
 
-    private func resetTrack() {
-        trackCoordinates = []
+    @IBAction func decreaseRadius(_ sender: UIButton) {
+        guard let anchor = anchor else { return }
+        anchor.setRadius(anchor.radius / 1.25)
+        try! context.save()
+        removeRadiusOverlay()
+        addRadiusOverlay()
+    }
+
+    @IBAction func increaseRadius(_ sender: UIButton) {
+        guard let anchor = anchor else { return }
+        anchor.setRadius(anchor.radius * 1.25)
+        try! context.save()
+        removeRadiusOverlay()
+        addRadiusOverlay()
     }
 }
 
@@ -182,11 +208,27 @@ extension ViewController: MKMapViewDelegate {
         let annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKMarkerAnnotationView ?? MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
 
         annotationView.annotation = annotation
-        annotationView.canShowCallout = false
-        annotationView.glyphImage = UIImage(named: "anchor5")
-        annotationView.markerTintColor = UIColor.mateBlue
+        annotationView.canShowCallout = true
+        annotationView.glyphImage = UIImage.anchorSymbol
+        annotationView.markerTintColor = UIColor.mateRed
         annotationView.animatesWhenAdded = true
-        annotationView.canShowCallout = false
+
+        let buttonLeft = UIButton(frame: CGRect(x: 0, y: 0, width: 44.0, height: 44.0))
+        let buttonRight = UIButton(frame: CGRect(x: 0, y: 0, width: 44.0, height: 44.0))
+        //button.backgroundColor = .red
+        buttonRight.setTitleColor(.black, for: .normal)
+        buttonLeft.setTitleColor(.black, for: .normal)
+        buttonLeft.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18.0)
+        buttonRight.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18.0)
+
+        buttonLeft.addTarget(nil, action: #selector(decreaseRadius(_:)), for: .primaryActionTriggered)
+        buttonRight.addTarget(nil, action: #selector(increaseRadius(_:)), for: .primaryActionTriggered)
+
+        buttonRight.setTitle("+", for: .normal)
+        buttonLeft.setTitle("-", for: .normal)
+        annotationView.rightCalloutAccessoryView = buttonRight
+        annotationView.leftCalloutAccessoryView = buttonLeft
+
         return annotationView
     }
 }

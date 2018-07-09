@@ -43,6 +43,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
+        if Anchor.fetchCurrent(in: viewContext) == nil {
+            locationManager.stopMonitoring()
+        }
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {

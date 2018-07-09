@@ -15,6 +15,7 @@
 		1B80C49C20EA3E2C0083357E /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B80C49B20EA3E2C0083357E /* UIColor.swift */; };
 		1B80C4A220EA44AE0083357E /* UserNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B80C4A120EA44AE0083357E /* UserNotificationManager.swift */; };
 		1B80C4A420EA57420083357E /* NSManagedObjectContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B80C4A320EA57420083357E /* NSManagedObjectContext.swift */; };
+		1B991C1820F292A7004AD35A /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B991C1720F292A7004AD35A /* UIImage.swift */; };
 		1B99242520EB565700E97D1A /* CLLocationCoordinate2D.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B99242420EB565700E97D1A /* CLLocationCoordinate2D.swift */; };
 		1B99242720ECD3B100E97D1A /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 1B99242620ECD3B100E97D1A /* README.md */; };
 		1B9EFFCE20E6D7B9006102BD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B9EFFCD20E6D7B9006102BD /* AppDelegate.swift */; };
@@ -35,6 +36,7 @@
 		1B80C49B20EA3E2C0083357E /* UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
 		1B80C4A120EA44AE0083357E /* UserNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNotificationManager.swift; sourceTree = "<group>"; };
 		1B80C4A320EA57420083357E /* NSManagedObjectContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSManagedObjectContext.swift; sourceTree = "<group>"; };
+		1B991C1720F292A7004AD35A /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
 		1B99242420EB565700E97D1A /* CLLocationCoordinate2D.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLLocationCoordinate2D.swift; sourceTree = "<group>"; };
 		1B99242620ECD3B100E97D1A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1B9EFFCA20E6D7B9006102BD /* AnchorMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AnchorMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -66,6 +68,7 @@
 				1B80C49B20EA3E2C0083357E /* UIColor.swift */,
 				1B80C4A320EA57420083357E /* NSManagedObjectContext.swift */,
 				1B99242420EB565700E97D1A /* CLLocationCoordinate2D.swift */,
+				1B991C1720F292A7004AD35A /* UIImage.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -221,6 +224,7 @@
 				1B80C4A420EA57420083357E /* NSManagedObjectContext.swift in Sources */,
 				1B80C4A220EA44AE0083357E /* UserNotificationManager.swift in Sources */,
 				1B80C49C20EA3E2C0083357E /* UIColor.swift in Sources */,
+				1B991C1820F292A7004AD35A /* UIImage.swift in Sources */,
 				1B99242520EB565700E97D1A /* CLLocationCoordinate2D.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
