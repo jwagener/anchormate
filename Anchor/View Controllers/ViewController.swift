@@ -214,18 +214,20 @@ extension ViewController: MKMapViewDelegate {
         annotationView.animatesWhenAdded = true
 
         let detailView = UISlider(frame: .zero)
+        detailView.addTarget(nil, action: #selector(slideRadius(_:)), for: .valueChanged)
+        detailView.isContinuous = true
+        detailView.minimumValue = Float(Anchor.minimumAnchorRadius)
+        NSLog("setting value\( Float(annotation.radius) )")
+        detailView.maximumValue = Float(Anchor.maximumAnchorRadius)
+        detailView.value = Float(annotation.radius)
 
         NSLayoutConstraint.activate([
             NSLayoutConstraint(item: detailView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 250.0),
             NSLayoutConstraint(item: detailView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 40.0)
         ])
 
-        detailView.isContinuous = true
-        detailView.minimumValue = Float(Anchor.minimumAnchorRadius)
-        detailView.value = Float(annotation.radius)
-        detailView.maximumValue = Float(Anchor.maximumAnchorRadius)
-        detailView.addTarget(nil, action: #selector(slideRadius(_:)), for: .valueChanged)
         annotationView.detailCalloutAccessoryView = detailView
+
         return annotationView
     }
 }

@@ -11,7 +11,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var userNotificationManager: UserNotificationManager!
 
     var viewContext: NSManagedObjectContext {
-
         return persistentContainer.viewContext
     }
 
